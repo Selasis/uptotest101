@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css">
     <title>uptotest101</title>
 
 </head>
 <body>
-    About us
+    <div class="music-selector">
+        <div class="music-box"><a href = "./music-1/"><button>1</button></a></div>
+        <div class="music-box"><a href = "./music-2/"><button>2</button></a></div>
+        <div class="music-box"><a href = "./music-3/"><button>3</button></a></div>
+        <div class="music-box"><a href = "./music-4/"><button>4</button></a></div>
+        <div class="music-box"><button>5</button></div>
+    </div>
+    <button id="openModal">Open Modal</button>
+
+  <!-- Modal structure -->
+    <div id="modalOverlay" class="hidden">
+        <div class="modal">
+        <h2>Modal Window</h2>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/8xcx3SdqL8g?si=b7qEqqxBv5_30jDh&amp;controls=0&autoplay=1&mute=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <button id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js">
+
+
+    </script>
+
 </body>
 </html>

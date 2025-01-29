@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Music Bingo</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+
+            .music-selector {
+                display: flex;
+                flex-wrap: wrap;
+                max-width: 500px;
+                gap: 10px;
+            }
+
+            .music-box button {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+                border: none;
+                border-radius: 5px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .music-box button:hover {
+                background-color: #0056b3;
+            }
+
+            /* Modal overlay */
+            #modalOverlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                visibility: hidden;
+                opacity: 0;
+                transition: visibility 0s, opacity 0.3s ease;
+            }
+
+            /* Modal visible state */
+            #modalOverlay.active {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            /* Modal box */
+            .modal {
+                background: white;
+                width: 90%;
+                max-width: 800px;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+                text-align: center;
+            }
+
+            .modal iframe {
+                width: 100%;
+                height: 450px; /* Adjusted for better display */
+                border-radius: 8px;
+            }
+
+            .modal button {
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            .modal button:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Music Bingo</h1>
+        <div class="music-selector">
+            <!-- Buttons will be dynamically generated -->
+        </div>
+
+        <!-- Modal structure -->
+        <div id="modalOverlay">
+            <div class="modal">
+                <h2 id="musicTitle">Music Name</h2>
+                <iframe
+                    id="youtubePlayer"
+                    src=""
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                ></iframe>
+                <button id="closeModal">Close</button>
+            </div>
+        </div>
+
+        <script>
+            // Array of YouTube video data
+const videoData = [
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' },
+    { code: '4m48GqaOz90', startTime: 45, musicName: 'Nasty - Tinashe' },
+    { code: 'W9qln7gM-hY', startTime: 60, musicName: 'My Love Mine All Mine - Mitski' },
+    { code: '3H7ihgkWpn8', startTime: 50, musicName: 'Boy\'s a Liar Pt. 2 - PinkPantheress & Ice Spice' },
+    { code: 'hYjHixQ9Ns4', startTime: 30, musicName: 'Million Dollar Baby - Tommy Richman' }
+];
+
+            function openModal(index) {
+                const selectedVideo = videoData[index];
+                const modal = document.getElementById('modalOverlay');
+                const videoPlayer = document.getElementById('youtubePlayer');
+                const musicTitle = document.getElementById('musicTitle');
+
+                // Update video source with startTime
+                videoPlayer.src = `https://www.youtube.com/embed/${selectedVideo.code}?autoplay=1&mute=0&start=${selectedVideo.startTime}`;
+
+                // Update music title
+                musicTitle.textContent = selectedVideo.musicName;
+
+                // Show modal
+                modal.classList.add('active');
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('modalOverlay');
+                const videoPlayer = document.getElementById('youtubePlayer');
+
+                // Stop video by resetting the src
+                videoPlayer.src = '';
+
+                // Hide modal
+                modal.classList.remove('active');
+            }
+
+            // Add event listener to close button
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+
+            // Dynamically generate buttons and attach event listeners
+            const musicSelector = document.querySelector('.music-selector');
+            videoData.forEach((video, index) => {
+                const button = document.createElement('button');
+                button.textContent = index + 1; // Button number (1, 2, 3, etc.)
+
+                // Attach event listener with correct index
+                button.addEventListener('click', () => openModal(index));
+
+                const musicBox = document.createElement('div');
+                musicBox.classList.add('music-box');
+                musicBox.appendChild(button);
+
+                musicSelector.appendChild(musicBox);
+            });
+        </script>
+    </body>
+</html>
